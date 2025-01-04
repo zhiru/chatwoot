@@ -2,6 +2,9 @@ version: '3'
 
 services:
   app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.base
     image: ghcr.io/aireset/chatwoot_codespace:latest
     volumes:
       - ..:/workspace:cached
