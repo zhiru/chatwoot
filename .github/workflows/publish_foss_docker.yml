@@ -57,6 +57,6 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/chatwoot:${{ env.CHATWOOT_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/chatwoot:${{ env.CHATWOOT_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
