@@ -19,10 +19,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
+      PGOPTIONS: '-c listen_addresses=*'
 
   redis:
     image: redis:latest
     restart: unless-stopped
+    command: redis-server --bind 0.0.0.0
     ports:
       - "6379:6379"  # Expondo a porta do Redis
     volumes:
