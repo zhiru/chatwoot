@@ -12,15 +12,17 @@
     "davidpallinder.rails-test-runner",
     "eamodio.gitlens",
     "github.copilot",
-    "mrmlnc.vscode-duplicate"
+    "mrmlnc.vscode-duplicate",
+    "ms-azuretools.vscode-docker",
+    "esbenp.prettier-vscode"
   ],
   "forwardPorts": [8025, 3000, 3035, 5432, 6379],
-  "postCreateCommand": ".devcontainer/scripts/setup.sh && POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rake db:chatwoot_prepare && yarn",
+  "postCreateCommand": ".devcontainer/scripts/setup.sh && yarn check || yarn install && bundle check || bundle install && POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rake db:chatwoot_prepare",
   "portsAttributes": {
-    "3000": { "label": "Rails Server" },
-    "3035": { "label": "Webpack Dev Server" },
-    "8025": { "label": "Mailhog UI" },
-    "5432": { "label": "PostgreSQL", "onAutoForward": "openBrowser" },
+    "3000": { "label": "Rails Server", "onAutoForward": "openBrowser" },
+    "3035": { "label": "Webpack Dev Server", "onAutoForward": "openBrowser" },
+    "8025": { "label": "Mailhog UI", "onAutoForward": "openBrowser" },
+    "5432": { "label": "PostgreSQL", "onAutoForward": "notify" },
     "6379": { "label": "Redis", "onAutoForward": "notify" }
   }
 }
