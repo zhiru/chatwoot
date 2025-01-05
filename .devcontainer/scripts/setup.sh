@@ -38,6 +38,12 @@ if [ -z "$TAG" ]; then
     TAG="latest"
 fi
 
+# Definir REPOSITORY_OWNER padrão
+REPOSITORY_OWNER=${REPOSITORY_OWNER:-zhiru}
+
+# Exibir o valor do REPOSITORY_OWNER codificado em Base64
+REPOSITORY_OWNER_BASE64=$(echo -n "$REPOSITORY_OWNER" | base64)
+
 # Log dos valores usados
 echo "Valores utilizados:"
 echo "REPOSITORY_OWNER: $REPOSITORY_OWNER"
@@ -57,17 +63,32 @@ else
 fi
 
 # Verificar se a imagem base está disponível
-echo "Verificando se a imagem base está disponível..."
-# if ! docker inspect --type=image ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
-#     echo "Erro: A imagem base ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
-#     exit 1
+# echo "Verificando se a imagem base está disponível..."
+# # if ! docker inspect --type=image ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
+# #     echo "Erro: A imagem base ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
+# #     exit 1
+# # fi
+
+# # docker pull ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
+# # docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
+# if ! docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
+#     echo "Erro: A imagem base ghcr.io/zhiru/chatwoot_codespace:${TAG} não foi encontrada!"
 # fi
 
-# docker pull ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
-# docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
-if ! docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
-    echo "Erro: A imagem base ghcr.io/zhiru/chatwoot_codespace:${TAG} não foi encontrada!"
+# Alterar o docker-compose.yml diretamente
+echo "Atualizando docker-compose.yml com REPOSITORY_OWNER=$REPOSITORY_OWNER e TAG=$TAG"
+echo "REPOSITORY_OWNER codificado em Base64: $REPOSITORY_OWNER_BASE64"
+
+if [ -f docker-compose.yml ]; then
+    sed -i -e "s|ghcr.io/.*/chatwoot_codespace:.*|ghcr.io/$REPOSITORY_OWNER/chatwoot_codespace:$TAG|" docker-compose.yml
+else
+    echo "Erro: Arquivo docker-compose.yml não encontrado!"
+    exit 1
 fi
+
+# Log do arquivo atualizado
+echo "Arquivo docker-compose.yml atualizado:"
+cat docker-compose.yml
 
 # Validar configuração do Docker Compose
 echo "Validando configuração do Docker Compose"
