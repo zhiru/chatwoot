@@ -17,7 +17,7 @@
     "esbenp.prettier-vscode"
   ],
   "forwardPorts": [8025, 3000, 3035, 5432, 6379],
-  "initializeCommand": ".devcontainer/scripts/setup.sh && export GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER:-zhiru} && export TAG=${TAG:-latest} && echo GITHUB_REPOSITORY_OWNER=$GITHUB_REPOSITORY_OWNER >> .env && echo TAG=$TAG >> .env && if [ -f .env ]; then echo '.env criado com sucesso:' && cat .env; else echo 'Erro: .env não criado!'; fi && export $(grep -v '^#' .env | xargs) && docker compose -f .devcontainer/docker-compose.yml config || echo 'Erro na configuração do Docker Compose!'",
+  "initializeCommand": ".devcontainer/scripts/setup.sh",
   "postCreateCommand": "yarn check || yarn install && bundle check || bundle install && POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rake db:chatwoot_prepare",
   "portsAttributes": {
     "3000": { "label": "Rails Server", "onAutoForward": "openBrowser" },
