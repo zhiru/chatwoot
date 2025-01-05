@@ -20,9 +20,11 @@ sed -i -e '/SMTP_ADDRESS/ s/=.*/=localhost/' .env
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD | tr '/' '-')
 
 # Log dos valores originais
-echo "Valores originais:"
-echo "GITHUB_REPOSITORY_OWNER: ${GITHUB_REPOSITORY_OWNER}"
-echo "TAG (branch atual): ${CURRENT_BRANCH}"
+echo "Valores originais (antes de definir padrões):"
+TEMP_OWNER="${GITHUB_REPOSITORY_OWNER}_DEBUG"
+TEMP_TAG="${TAG}_DEBUG"
+echo "GITHUB_REPOSITORY_OWNER (modificado para exibição): $TEMP_OWNER"
+echo "TAG (branch atual): $CURRENT_BRANCH"
 
 # Definir valores padrão para GITHUB_REPOSITORY_OWNER e TAG
 GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER:-zhiru}
