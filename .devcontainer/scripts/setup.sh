@@ -19,28 +19,24 @@ sed -i -e '/SMTP_ADDRESS/ s/=.*/=localhost/' .env
 # Determinar a TAG da branch atual
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD | tr '/' '-')
 
+# Obter o nome completo do repositório remoto (owner/repo)
+REPO_FULL_NAME=$(git remote get-url origin | sed -nE 's#https://[^/]+/([^/]+/[^/]+)#\1#p')
+
 # Log dos valores originais
 echo "Valores originais (antes de definir padrões):"
-echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
-echo "GITHUB_REPOSITORY_OWNER antes da definição: ${GITHUB_REPOSITORY_OWNER:-NÃO DEFINIDO}"
+echo "REPO_FULL_NAME (nome completo do repositório): ${REPO_FULL_NAME}"
 echo "TAG (branch atual): ${CURRENT_BRANCH}"
 
-# Definir GITHUB_REPOSITORY_OWNER baseado no GITHUB_REPOSITORY
-if [ -z "$GITHUB_REPOSITORY_OWNER" ]; then
-    if [ -n "$GITHUB_REPOSITORY" ]; then
-        GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY%%/*}
-    else
-        GITHUB_REPOSITORY_OWNER="zhiru"  # Valor padrão
-    fi
-fi
-
-# Definir TAG com fallback
+# Definir valores padrão para GITHUB_REPOSITORY_OWNER e TAG
+GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER:-$(echo $REPO_FULL_NAME | cut -d'/' -f1)}
 TAG=${TAG:-$CURRENT_BRANCH}
+
+# Fallback para latest se a TAG estiver vazia
 if [ -z "$TAG" ]; then
     TAG="latest"
 fi
 
-# Log dos valores utilizados
+# Log dos valores usados
 echo "Valores utilizados:"
 echo "GITHUB_REPOSITORY_OWNER: $GITHUB_REPOSITORY_OWNER"
 echo "TAG: $TAG"
@@ -59,12 +55,25 @@ else
     exit 1
 fi
 
-# Verificar se a imagem base está disponível
+# Validar se a imagem base está disponível
 echo "Verificando se a imagem base está disponível..."
 if ! docker inspect --type=image ghcr.io/${GITHUB_REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
     echo "Erro: A imagem base ghcr.io/${GITHUB_REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
     echo "Cancelando a criação do Codespace."
     exit 1
 fi
+
+# Exportar variáveis de ambiente do .env
+echo "Carregando variáveis de ambiente do .env"
+set -a
+source .env
+set +a
+
+# Validar a configuração do Docker Compose
+echo "Validando configuração do Docker Compose"
+docker compose -f .devcontainer/docker-compose.yml config || {
+    echo "Erro na configuração do Docker Compose!"
+    exit 1
+}
 
 echo "Setup concluído com sucesso!"
