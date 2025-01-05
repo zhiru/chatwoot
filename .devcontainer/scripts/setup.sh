@@ -25,12 +25,12 @@ set -a
 source .env
 set +a
 
-# Validar se o REPOSITORY_OWNER está definido no .env
-if [ -z "$REPOSITORY_OWNER" ]; then
-    echo "Erro: REPOSITORY_OWNER não está definido no arquivo .env!"
-    echo "Adicione REPOSITORY_OWNER=<seu_owner> ao arquivo .env e tente novamente."
-    exit 1
-fi
+# # Validar se o REPOSITORY_OWNER está definido no .env
+# if [ -z "$REPOSITORY_OWNER" ]; then
+#     echo "Erro: REPOSITORY_OWNER não está definido no arquivo .env!"
+#     echo "Adicione REPOSITORY_OWNER=<seu_owner> ao arquivo .env e tente novamente."
+#     exit 1
+# fi
 
 # Determinar a TAG a partir da branch atual
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD | tr '/' '-')
@@ -52,6 +52,10 @@ REPOSITORY_OWNER_BASE64=$(echo -n "$REPOSITORY_OWNER" | base64)
 echo "Valores utilizados:"
 echo "REPOSITORY_OWNER: $REPOSITORY_OWNER"
 echo "TAG: $TAG"
+
+# Adicionar TAG ao .env
+sed -i -e "/^REPOSITORY_OWNER=/d" .env
+echo "REPOSITORY_OWNER=$REPOSITORY_OWNER" >> .env
 
 # Adicionar TAG ao .env
 sed -i -e "/^TAG=/d" .env
