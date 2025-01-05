@@ -22,10 +22,10 @@ set -a
 source .env
 set +a
 
-# Validar se o GITHUB_REPOSITORY_OWNER está definido no .env
-if [ -z "$GITHUB_REPOSITORY_OWNER" ]; then
-    echo "Erro: GITHUB_REPOSITORY_OWNER não está definido no arquivo .env!"
-    echo "Adicione GITHUB_REPOSITORY_OWNER=<seu_owner> ao arquivo .env e tente novamente."
+# Validar se o REPOSITORY_OWNER está definido no .env
+if [ -z "$REPOSITORY_OWNER" ]; then
+    echo "Erro: REPOSITORY_OWNER não está definido no arquivo .env!"
+    echo "Adicione REPOSITORY_OWNER=<seu_owner> ao arquivo .env e tente novamente."
     exit 1
 fi
 
@@ -40,7 +40,7 @@ fi
 
 # Log dos valores usados
 echo "Valores utilizados:"
-echo "GITHUB_REPOSITORY_OWNER: $GITHUB_REPOSITORY_OWNER"
+echo "REPOSITORY_OWNER: $REPOSITORY_OWNER"
 echo "TAG: $TAG"
 
 # Adicionar TAG ao .env
@@ -58,8 +58,8 @@ fi
 
 # Verificar se a imagem base está disponível
 echo "Verificando se a imagem base está disponível..."
-if ! docker inspect --type=image ghcr.io/${GITHUB_REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
-    echo "Erro: A imagem base ghcr.io/${GITHUB_REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
+if ! docker inspect --type=image ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
+    echo "Erro: A imagem base ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
     exit 1
 fi
 
