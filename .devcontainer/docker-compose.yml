@@ -13,13 +13,25 @@ services:
     image: base:latest
         
   app:
-    env_file: ../.env  # Carrega o arquivo .env com as variáveis TAG e outras
+    environment:
+      RAILS_ENV: development
+      
+    env_file:
+      - ../.env
+
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-zhiru}/chatwoot_codespace:${TAG:-latest}
+
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+
     volumes:
       - ..:/workspace:cached
 
     depends_on:
-      - base  # Define a dependência do serviço base
+      - base
+      - db
+      - redis
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity

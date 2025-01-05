@@ -1,7 +1,10 @@
 {
   "name": "Chatwoot Development Codespace",
   "service": "app",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": [
+    ".devcontainer/docker-compose.yml"
+  ],
+  "workspaceFolder": "/workspace",
   "settings": {
     "terminal.integrated.shell.linux": "/bin/zsh"
   },
@@ -17,8 +20,8 @@
     "esbenp.prettier-vscode"
   ],
   "forwardPorts": [8025, 3000, 3035, 5432, 6379],
-  "initializeCommand": ".devcontainer/scripts/setup.sh",
-  "postCreateCommand": "yarn check || yarn install && bundle check || bundle install && POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rake db:chatwoot_prepare",
+  "initializeCommand": "/bin/sh -c '.devcontainer/scripts/setup.sh'",
+  "postCreateCommand": "bundle check || bundle install && yarn install && POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rake db:chatwoot_prepare",
   "portsAttributes": {
     "3000": { "label": "Rails Server", "onAutoForward": "openBrowser" },
     "3035": { "label": "Webpack Dev Server", "onAutoForward": "openBrowser" },
