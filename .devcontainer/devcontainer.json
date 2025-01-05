@@ -17,7 +17,7 @@
     "esbenp.prettier-vscode"
   ],
   "forwardPorts": [8025, 3000, 3035, 5432, 6379],
-  "initializeCommand": "echo TAG=$(git rev-parse --abbrev-ref HEAD | tr '/' '-') > .env",
+  "initializeCommand": "echo GITHUB_REPOSITORY_OWNER=$(echo $GITHUB_REPOSITORY | cut -d'/' -f1) > .env && echo TAG=$(git rev-parse --abbrev-ref HEAD | tr '/' '-') >> .env",
   "postCreateCommand": ".devcontainer/scripts/setup.sh && yarn check || yarn install && bundle check || bundle install && POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rake db:chatwoot_prepare",
   "portsAttributes": {
     "3000": { "label": "Rails Server", "onAutoForward": "openBrowser" },
