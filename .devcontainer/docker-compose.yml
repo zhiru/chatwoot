@@ -15,7 +15,7 @@ services:
     image: base:latest
         
   app:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/chatwoot_codespace:${TAG}
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-zhiru}/chatwoot_codespace:${TAG:-latest}
     env_file: ../.env  # Carrega o arquivo .env com as variáveis TAG e outras
     volumes:
       - ..:/workspace:cached
