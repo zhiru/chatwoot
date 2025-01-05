@@ -9,18 +9,17 @@
     "terminal.integrated.shell.linux": "/bin/zsh"
   },
   "extensions": [
-    "rebornix.Ruby",
+    "Shopify.ruby-lsp",
     "misogi.ruby-rubocop",
     "wingrunr21.vscode-ruby",
     "davidpallinder.rails-test-runner",
-    "eamodio.gitlens",
     "github.copilot",
     "mrmlnc.vscode-duplicate",
     "ms-azuretools.vscode-docker",
     "esbenp.prettier-vscode"
   ],
   "forwardPorts": [8025, 3000, 3035, 5432, 6379],
-  "initializeCommand": "/bin/sh -c '.devcontainer/scripts/setup.sh'",
+  "initializeCommand": "/bin/bash .devcontainer/scripts/setup.sh",
   "postCreateCommand": "bundle check || bundle install && yarn install && POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rake db:chatwoot_prepare",
   "portsAttributes": {
     "3000": { "label": "Rails Server", "onAutoForward": "openBrowser" },
