@@ -19,12 +19,6 @@ sed -i -e '/REDIS_URL/ s/=.*/=redis:\/\/localhost:6379/' .env
 sed -i -e '/POSTGRES_HOST/ s/=.*/=localhost/' .env
 sed -i -e '/SMTP_ADDRESS/ s/=.*/=localhost/' .env
 
-# Carregar variáveis do .env
-echo "Carregando variáveis do .env"
-set -a
-source .env
-set +a
-
 # # Validar se o REPOSITORY_OWNER está definido no .env
 # if [ -z "$REPOSITORY_OWNER" ]; then
 #     echo "Erro: REPOSITORY_OWNER não está definido no arquivo .env!"
@@ -43,7 +37,8 @@ fi
 
 # Definir REPOSITORY_OWNER padrão
 # REPOSITORY_OWNER=${REPOSITORY_OWNER:-zhiru}
-REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER:-aireset}
+# REPOSITORY_OWNER=${GITHUB_USER:-zhiru}
+REPOSITORY_OWNER=$(echo "$GITHUB_REPOSITORY" | cut -d'/' -f1)
 
 # Exibir o valor do REPOSITORY_OWNER codificado em Base64
 REPOSITORY_OWNER_BASE64=$(echo -n "$REPOSITORY_OWNER" | base64)
@@ -53,32 +48,32 @@ echo "Valores utilizados:"
 echo "REPOSITORY_OWNER: $REPOSITORY_OWNER"
 echo "TAG: $TAG"
 
-# Adicionar TAG ao .env
+# Adicionar ao .env
 sed -i -e "/^REPOSITORY_OWNER=/d" .env
-echo "REPOSITORY_OWNER=$REPOSITORY_OWNER" >> .env
-
-# Adicionar TAG ao .env
 sed -i -e "/^TAG=/d" .env
+echo "REPOSITORY_OWNER=$REPOSITORY_OWNER" >> .env
 echo "TAG=$TAG" >> .env
 
-# Garantir que o arquivo foi criado corretamente
-if [ -f .env ]; then
-    echo ".env criado/atualizado com sucesso:"
-    cat .env
-else
-    echo "Erro: .env não foi criado ou atualizado!"
-    exit 1
-fi
+# Exportar as variáveis para o ambiente
+export $(grep -v '^#' .env | xargs)
+
+# Log das variáveis exportadas
+echo "Exportando variáveis do .env:"
+env | grep -E "REPOSITORY_OWNER|TAG"
+
+# Limpar cache do Docker Compose
+docker compose -f "$DOCKER_COMPOSE_FILE" down
 
 # Log do arquivo atualizado
-echo "Arquivo $DOCKER_COMPOSE_FILE atualizado:"
-cat "$DOCKER_COMPOSE_FILE"
+echo "Arquivo $DOCKER_COMPOSE_FILE atualizado!"
+# cat "$DOCKER_COMPOSE_FILE"
 
 # Validar a configuração do Docker Compose
 echo "Validando configuração do Docker Compose"
-docker compose -f "$DOCKER_COMPOSE_FILE" config || {
+if docker compose -f "$DOCKER_COMPOSE_FILE" config --quiet; then
+    echo "Configuração do Docker Compose válida."
+else
     echo "Erro na configuração do Docker Compose!"
-    exit 1
-}
+fi
 
 echo "Setup concluído com sucesso!"

@@ -2,11 +2,11 @@
   "name": "Chatwoot Development Codespace",
   "service": "app",
   "dockerComposeFile": [
-    ".devcontainer/docker-compose.yml"
+    "docker-compose.yml"
   ],
   "workspaceFolder": "/workspace",
   "settings": {
-    "terminal.integrated.shell.linux": "/bin/zsh"
+    "terminal.integrated.shell.linux": "/bin/bash"
   },
   "extensions": [
     "Shopify.ruby-lsp",
