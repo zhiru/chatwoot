@@ -16,10 +16,32 @@ sed -i -e '/REDIS_URL/ s/=.*/=redis:\/\/localhost:6379/' .env
 sed -i -e '/POSTGRES_HOST/ s/=.*/=localhost/' .env
 sed -i -e '/SMTP_ADDRESS/ s/=.*/=localhost/' .env
 
+# Determinar a TAG da branch atual
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD | tr '/' '-')
+
+# Log dos valores originais
+echo "Valores originais:"
+echo "GITHUB_REPOSITORY_OWNER: ${GITHUB_REPOSITORY_OWNER}"
+echo "TAG (branch atual): ${CURRENT_BRANCH}"
+
+# Definir valores padrão para GITHUB_REPOSITORY_OWNER e TAG
+GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER:-zhiru}
+TAG=${TAG:-$CURRENT_BRANCH}
+
+# Fallback para latest se a TAG estiver vazia
+if [ -z "$TAG" ]; then
+    TAG="latest"
+fi
+
+# Log dos valores usados
+echo "Valores utilizados:"
+echo "GITHUB_REPOSITORY_OWNER: $GITHUB_REPOSITORY_OWNER"
+echo "TAG: $TAG"
+
 # Adicionar GITHUB_REPOSITORY_OWNER e TAG ao .env
-echo "Exportando GITHUB_REPOSITORY_OWNER e TAG para o .env"
-echo "GITHUB_REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER:-zhiru}" >> .env
-echo "TAG=${TAG:-latest}" >> .env
+echo "Adicionando GITHUB_REPOSITORY_OWNER e TAG ao .env"
+echo "GITHUB_REPOSITORY_OWNER=$GITHUB_REPOSITORY_OWNER" >> .env
+echo "TAG=$TAG" >> .env
 
 # Garantir que o arquivo foi criado corretamente
 if [ -f .env ]; then
