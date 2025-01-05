@@ -1,6 +1,6 @@
 # The below image is created out of the Dockerfile.base
 # It has the dependencies already installed so that codespace will boot up fast
-FROM ghcr.io/${REPOSITORY_OWNER:-zhiru}/chatwoot_codespace:${TAG:-latest}
+FROM ghcr.io/${REPOSITORY_OWNER:-zhiru}/chatwoot_codespace:${REPOSITORY_TAG:-latest}
 
 # Do the set up required for chatwoot app
 WORKDIR /workspace

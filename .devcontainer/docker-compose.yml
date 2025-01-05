@@ -27,7 +27,7 @@ services:
         USER_UID: "1000"
         USER_GID: "1000"
         REPOSITORY_OWNER: ${REPOSITORY_OWNER:-aireset}
-        TAG: ${TAG:-latest}
+        REPOSITORY_TAG: ${REPOSITORY_TAG:-latest}
 
     volumes:
       - ..:/workspace:cached

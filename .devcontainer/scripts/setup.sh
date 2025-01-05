@@ -26,18 +26,16 @@ sed -i -e '/SMTP_ADDRESS/ s/=.*/=localhost/' .env
 #     exit 1
 # fi
 
-# Determinar a TAG a partir da branch atual
+# Determinar a REPOSITORY_TAG a partir da branch atual
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD | tr '/' '-')
-TAG=${TAG:-$CURRENT_BRANCH}
+REPOSITORY_TAG=${REPOSITORY_TAG:-$CURRENT_BRANCH}
 
-# Fallback para 'latest' se a TAG estiver vazia
-if [ -z "$TAG" ]; then
-    TAG="latest"
+# Fallback para 'latest' se a REPOSITORY_TAG estiver vazia
+if [ -z "$REPOSITORY_TAG" ]; then
+    REPOSITORY_TAG="latest"
 fi
 
 # Definir REPOSITORY_OWNER padrão
-# REPOSITORY_OWNER=${REPOSITORY_OWNER:-zhiru}
-# REPOSITORY_OWNER=${GITHUB_USER:-zhiru}
 REPOSITORY_OWNER=$(echo "$GITHUB_REPOSITORY" | cut -d'/' -f1)
 
 # Exibir o valor do REPOSITORY_OWNER codificado em Base64
@@ -46,20 +44,26 @@ REPOSITORY_OWNER_BASE64=$(echo -n "$REPOSITORY_OWNER" | base64)
 # Log dos valores usados
 echo "Valores utilizados:"
 echo "REPOSITORY_OWNER: $REPOSITORY_OWNER"
-echo "TAG: $TAG"
+echo "REPOSITORY_TAG: $REPOSITORY_TAG"
 
 # Adicionar ao .env
 sed -i -e "/^REPOSITORY_OWNER=/d" .env
-sed -i -e "/^TAG=/d" .env
+sed -i -e "/^REPOSITORY_TAG=/d" .env
 echo "REPOSITORY_OWNER=$REPOSITORY_OWNER" >> .env
-echo "TAG=$TAG" >> .env
+echo "REPOSITORY_TAG=$REPOSITORY_TAG" >> .env
 
 # Exportar as variáveis para o ambiente
 export $(grep -v '^#' .env | xargs)
 
+# Carregar variáveis do .env
+echo "Carregando variáveis do .env"
+set -a
+source .env
+set +a
+
 # Log das variáveis exportadas
 echo "Exportando variáveis do .env:"
-env | grep -E "REPOSITORY_OWNER|TAG"
+env | grep -E "REPOSITORY_OWNER|REPOSITORY_TAG"
 
 # Limpar cache do Docker Compose
 docker compose -f "$DOCKER_COMPOSE_FILE" down
