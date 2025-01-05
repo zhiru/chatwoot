@@ -42,7 +42,8 @@ if [ -z "$TAG" ]; then
 fi
 
 # Definir REPOSITORY_OWNER padrão
-REPOSITORY_OWNER=${REPOSITORY_OWNER:-zhiru}
+# REPOSITORY_OWNER=${REPOSITORY_OWNER:-zhiru}
+REPOSITORY_OWNER=${GITHUB_REPOSITORY_OWNER:-aireset}
 
 # Exibir o valor do REPOSITORY_OWNER codificado em Base64
 REPOSITORY_OWNER_BASE64=$(echo -n "$REPOSITORY_OWNER" | base64)
@@ -62,31 +63,6 @@ if [ -f .env ]; then
     cat .env
 else
     echo "Erro: .env não foi criado ou atualizado!"
-    exit 1
-fi
-
-# Verificar se a imagem base está disponível
-# echo "Verificando se a imagem base está disponível..."
-# # if ! docker inspect --type=image ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
-# #     echo "Erro: A imagem base ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
-# #     exit 1
-# # fi
-
-# # docker pull ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
-# # docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
-# if ! docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
-#     echo "Erro: A imagem base ghcr.io/zhiru/chatwoot_codespace:${TAG} não foi encontrada!"
-# fi
-
-# Alterar o docker-compose.yml diretamente
-echo "Atualizando docker-compose.yml com REPOSITORY_OWNER=$REPOSITORY_OWNER e TAG=$TAG"
-echo "REPOSITORY_OWNER codificado em Base64: $REPOSITORY_OWNER_BASE64"
-
-if [ -f "$DOCKER_COMPOSE_FILE" ]; then
-    echo "Atualizando $DOCKER_COMPOSE_FILE com REPOSITORY_OWNER=$REPOSITORY_OWNER e TAG=$TAG"
-    sed -i -e "s|ghcr.io/.*/chatwoot_codespace:.*|ghcr.io/$REPOSITORY_OWNER/chatwoot_codespace:$TAG|" "$DOCKER_COMPOSE_FILE"
-else
-    echo "Erro: Arquivo $DOCKER_COMPOSE_FILE não encontrado!"
     exit 1
 fi
 
