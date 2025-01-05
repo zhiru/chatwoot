@@ -59,8 +59,8 @@ fi
 echo "Verificando se a imagem base está disponível..."
 if ! docker inspect --type=image ghcr.io/${GITHUB_REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
     echo "Erro: A imagem base ghcr.io/${GITHUB_REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
-    echo "Cancelando a criação do Codespace."
-    exit 1
+    #echo "Cancelando a criação do Codespace."
+    #exit 1
 fi
 
 # Exportar variáveis de ambiente do .env
