@@ -35,6 +35,9 @@ jobs:
   
       - name: Build and push the Codespace Base Image
         run: |
+          # Substituir '/' no nome da branch por '-'
+          TAG=$(echo "${{ env.branch_name }}" | tr '/' '-')
           docker-compose -f .devcontainer/docker-compose.yml build base
-          docker tag base:latest ghcr.io/aireset/chatwoot_codespace:${{ env.branch_name }}
-          docker push ghcr.io/aireset/chatwoot_codespace:${{ env.branch_name }}
+          docker tag base:latest ghcr.io/${{ github.repository_owner }}/chatwoot_codespace:$TAG
+          docker push ghcr.io/${{ github.repository_owner }}/chatwoot_codespace:$TAG
+
