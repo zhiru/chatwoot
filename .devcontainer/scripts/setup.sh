@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Caminho do arquivo docker-compose.yml
+DOCKER_COMPOSE_FILE=".devcontainer/docker-compose.yml"
+
 # Criar o arquivo .env se não existir
 if [ ! -f .env ]; then
     echo "Criando arquivo .env a partir de .env.example"
@@ -79,21 +82,23 @@ fi
 echo "Atualizando docker-compose.yml com REPOSITORY_OWNER=$REPOSITORY_OWNER e TAG=$TAG"
 echo "REPOSITORY_OWNER codificado em Base64: $REPOSITORY_OWNER_BASE64"
 
-if [ -f docker-compose.yml ]; then
-    sed -i -e "s|ghcr.io/.*/chatwoot_codespace:.*|ghcr.io/$REPOSITORY_OWNER/chatwoot_codespace:$TAG|" docker-compose.yml
+if [ -f "$DOCKER_COMPOSE_FILE" ]; then
+    echo "Atualizando $DOCKER_COMPOSE_FILE com REPOSITORY_OWNER=$REPOSITORY_OWNER e TAG=$TAG"
+    sed -i -e "s|ghcr.io/.*/chatwoot_codespace:.*|ghcr.io/$REPOSITORY_OWNER/chatwoot_codespace:$TAG|" "$DOCKER_COMPOSE_FILE"
 else
-    echo "Erro: Arquivo docker-compose.yml não encontrado!"
+    echo "Erro: Arquivo $DOCKER_COMPOSE_FILE não encontrado!"
     exit 1
 fi
 
 # Log do arquivo atualizado
-echo "Arquivo docker-compose.yml atualizado:"
-cat docker-compose.yml
+echo "Arquivo $DOCKER_COMPOSE_FILE atualizado:"
+cat "$DOCKER_COMPOSE_FILE"
 
-# Validar configuração do Docker Compose
+# Validar a configuração do Docker Compose
 echo "Validando configuração do Docker Compose"
-docker compose -f .devcontainer/docker-compose.yml config || {
+docker compose -f "$DOCKER_COMPOSE_FILE" config || {
     echo "Erro na configuração do Docker Compose!"
+    exit 1
 }
 
 echo "Setup concluído com sucesso!"
