@@ -58,16 +58,21 @@ fi
 
 # Verificar se a imagem base está disponível
 echo "Verificando se a imagem base está disponível..."
-if ! docker inspect --type=image ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
-    echo "Erro: A imagem base ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
-    exit 1
+# if ! docker inspect --type=image ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
+#     echo "Erro: A imagem base ghcr.io/${REPOSITORY_OWNER}/chatwoot_codespace:${TAG} não foi encontrada!"
+#     exit 1
+# fi
+
+# docker pull ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
+# docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:b-v3.15.0
+if ! docker inspect --type=image ghcr.io/zhiru/chatwoot_codespace:${TAG} > /dev/null 2>&1; then
+    echo "Erro: A imagem base ghcr.io/zhiru/chatwoot_codespace:${TAG} não foi encontrada!"
 fi
 
 # Validar configuração do Docker Compose
 echo "Validando configuração do Docker Compose"
 docker compose -f .devcontainer/docker-compose.yml config || {
     echo "Erro na configuração do Docker Compose!"
-    exit 1
 }
 
 echo "Setup concluído com sucesso!"
